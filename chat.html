@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<title>آزمون ریاضی 1 دهم تجربی</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<div id="app">
+
+    <!-- صفحه ورود -->
+
+    <section id="loginPage" class="page active">
+
+        <header class="main-header">
+
+            <h2>بسم الله الرحمن الرحیم</h2>
+
+            <h1>آزمون آنلاین ریاضی 1 دهم تجربی</h1>
+
+            <div class="teacher-info">
+
+                <p>دبیر: میثم یعقوبیان</p>
+                <p>مدرسه: غدیر</p>
+                <p>پایه: دهم</p>
+                <p>رشته: تجربی</p>
+
+            </div>
+
+        </header>
+
+        <div class="card">
+
+            <h3>اطلاعات دانش آموز</h3>
+
+            <label>
+                نام و نام خانوادگی
+                <input
+                    type="text"
+                    id="studentName"
+                    required>
+            </label>
+
+            <label>
+                شماره کلاس
+                <input
+                    type="text"
+                    id="classNumber"
+                    required>
+            </label>
+
+            <label>
+                کد دانش آموزی
+                <input
+                    type="text"
+                    id="studentCode"
+                    required>
+            </label>
+
+            <button id="startBtn">
+                شروع آزمون
+            </button>
+
+        </div>
+
+    </section>
+
+    <!-- صفحه آزمون -->
+
+    <section id="examPage" class="page">
+
+        <header class="exam-header">
+
+            <div class="timer-box">
+
+                ⏱ زمان باقی مانده:
+
+                <span id="timer">
+                    45:00
+                </span>
+
+            </div>
+
+            <div class="progress-container">
+
+                <div id="progressBar"></div>
+
+            </div>
+
+            <div id="questionCounter">
+
+                سوال 1 از 20
+
+            </div>
+
+        </header>
+
+        <main>
+
+            <div class="question-card">
+
+                <h2 id="questionTitle">
+
+                </h2>
+
+                <div id="optionsContainer">
+
+                </div>
+
+            </div>
+
+        </main>
+
+        <footer class="exam-footer">
+
+            <button id="nextBtn">
+
+                سوال بعدی
+
+            </button>
+
+        </footer>
+
+    </section>
+
+    <!-- صفحه پایان آزمون -->
+
+    <section id="resultPage" class="page">
+
+        <div class="card">
+
+            <h2>
+                آزمون پایان یافت
+            </h2>
+
+            <div id="finalScore">
+
+            </div>
+
+            <div id="resultMessage">
+
+                نتیجه شما ثبت شد.
+
+                پاسخنامه پس از گذشت
+                1 ساعت
+                قابل مشاهده خواهد بود.
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- صفحه مشاهده پاسخنامه -->
+
+    <section id="reviewPage" class="page">
+
+        <div class="card">
+
+            <h2>
+
+                مشاهده عملکرد
+
+            </h2>
+
+            <label>
+
+                کد دانش آموزی
+
+                <input
+                    type="text"
+                    id="reviewCode">
+
+            </label>
+
+            <button id="reviewBtn">
+
+                مشاهده
+
+            </button>
+
+            <div id="reviewResult">
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
