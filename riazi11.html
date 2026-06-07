@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>آزمون ریاضی دهم تجربی | ذخیره خودکار در گوگل</title>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tahoma', 'Segoe UI', 'Vazir', sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #e9edf2 100%); color: #1e2a3e; line-height: 1.5; overflow-x: hidden; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px 16px 40px; }
+        .info-bar { background: #ffffffdd; backdrop-filter: blur(10px); border-radius: 28px; padding: 12px 18px; margin-bottom: 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 10px; }
+        .teacher-info { font-size: 0.9rem; color: #2c3e66; }
+        .timer-area { background: #1e2a3e; color: #facc15; padding: 8px 16px; border-radius: 40px; font-family: monospace; font-size: 1.3rem; font-weight: bold; }
+        .progress-section { margin-bottom: 20px; }
+        .progress-bar-container { background-color: #cbd5e1; border-radius: 20px; height: 12px; overflow: hidden; }
+        .progress-fill { background-color: #10b981; width: 0%; height: 100%; transition: width 0.3s ease; }
+        .question-counter { display: flex; justify-content: space-between; margin-top: 6px; font-size: 0.8rem; color: #475569; }
+        .question-card { background: white; border-radius: 32px; padding: 24px 20px; margin-bottom: 24px; box-shadow: 0 12px 24px -12px rgba(0,0,0,0.2); }
+        .question-text { font-size: 1.3rem; font-weight: 700; margin-bottom: 24px; background: #f1f5f9; padding: 16px; border-radius: 24px; }
+        .options { display: flex; flex-direction: column; gap: 14px; margin-bottom: 30px; }
+        .option { display: flex; align-items: center; gap: 12px; background: #f8fafc; padding: 12px 16px; border-radius: 60px; border: 1px solid #e2e8f0; cursor: pointer; }
+        .option:hover { background: #eef2ff; border-color: #818cf8; }
+        input[type="radio"] { width: 20px; height: 20px; cursor: pointer; accent-color: #3b82f6; }
+        .option label { flex: 1; cursor: pointer; font-size: 1rem; }
+        .nav-buttons { display: flex; justify-content: space-between; gap: 16px; margin-top: 10px; }
+        button { background-color: #3b82f6; border: none; color: white; padding: 14px 24px; border-radius: 60px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: all 0.2s; min-width: 120px; min-height: 48px; }
+        button:hover { background-color: #2563eb; transform: scale(0.97); }
+        button:disabled { background-color: #94a3b8; cursor: not-allowed; }
+        .submit-btn { background-color: #059669; width: 100%; margin-top: 20px; }
+        .register-box { background: white; border-radius: 40px; padding: 30px 20px; text-align: center; box-shadow: 0 20px 30px -10px rgba(0,0,0,0.1); }
+        .register-box input { width: 100%; padding: 14px 16px; margin: 12px 0; border-radius: 60px; border: 1px solid #cbd5e1; font-size: 1rem; }
+        .error-msg { color: #dc2626; font-size: 0.8rem; margin-top: 8px; }
+        .result-card { background: white; border-radius: 32px; padding: 28px; text-align: center; }
+        .score { font-size: 2.8rem; font-weight: 800; color: #3b82f6; margin: 20px 0; }
+        footer { margin-top: 30px; text-align: center; font-size: 0.7rem; color: #64748b; }
+        @media (max-width: 480px) { .container { padding: 12px; } .question-text { font-size: 1.1rem; } .option label { font-size: 0.85rem; } button { padding: 12px 18px; min-width: 100px; } .timer-area { font-size: 1rem; } }
+        @media (max-width: 768px) { .info-bar { flex-direction: column; align-items: stretch; } }
+    </style>
+</head>
+<body>
+<div class="container" id="app"></div>
+
+<script>
+    // ======================= سوالات با فرمت LaTeX =======================
+    const QUESTIONS = [
+        { text: "مجموعه اعداد طبیعی کوچک‌تر از \\(5\\) کدام است؟", options: ["\\(\\{0,1,2,3,4\\}\\)", "\\(\\{1,2,3,4\\}\\)", "\\(\\{1,2,3,4,5\\}\\)", "\\(\\{0,1,2,3,4,5\\}\\)"], correct: 1 },
+        { text: "در مثلث قائم‌الزاویه، اگر \\(\\sin A = 0.6\\) باشد، \\(\\cos A\\) کدام است؟", options: ["0.4", "0.6", "0.8", "0.75"], correct: 2 },
+        { text: "اگر زاویه \\(\\theta\\) در ربع سوم باشد و \\(\\tan \\theta = 1\\)، آنگاه \\(\\theta\\) چند درجه است؟", options: ["45°", "135°", "225°", "315°"], correct: 2 },
+        { text: "حاصل عبارت \\(\\sqrt{18}\\) ساده شده برابر است با:", options: ["\\(3\\sqrt{2}\\)", "\\(2\\sqrt{3}\\)", "\\(6\\sqrt{2}\\)", "\\(9\\sqrt{2}\\)"], correct: 0 },
+        { text: "مقدار \\(8^{\\frac{2}{3}}\\) کدام است؟", options: ["4", "8", "16", "2"], correct: 0 },
+        { text: "مجموعه جواب معادله \\(x^2 - 4 = 0\\) کدام است؟", options: ["\\(\\{2\\}\\)", "\\(\\{2, -2\\}\\)", "\\(\\{4\\}\\)", "\\(\\varnothing\\)"], correct: 1 },
+        { text: "معادله \\(x^2 - 6x + 9 = 0\\) چند ریشه حقیقی دارد؟", options: ["0", "1 (ریشه مضاعف)", "2 ریشه متمایز", "نامشخص"], correct: 1 },
+        { text: "تابع \\(f(x)=3x-2\\) با دامنه \\(\\{1,2,3\\}\\)، مقدار \\(f(2)\\) کدام است؟", options: ["4", "5", "6", "7"], correct: 0 },
+        { text: "دامنه تابع \\(f(x)=\\sqrt{x-1}\\) کدام بازه است؟", options: ["\\([1,+\\infty)\\)", "\\((1,+\\infty)\\)", "\\((-\\infty,1]\\)", "\\(\\mathbb{R}\\)"], correct: 0 },
+        { text: "دامنه تابع \\(f(x)=\\frac{1}{x-3}\\) کدام است؟", options: ["همه اعداد حقیقی", "همه اعداد حقیقی به جز \\(3\\)", "همه اعداد حقیقی به جز \\(-3\\)", "\\(x>3\\)"], correct: 1 },
+        { text: "تابع \\(f(x)=|x-2|\\)، مقدار \\(f(5)\\) کدام است؟", options: ["3", "-3", "7", "5"], correct: 0 },
+        { text: "با ارقام \\(1,2,3\\) چند عدد دو رقمی می‌توان ساخت (تکرار مجاز)؟", options: ["6", "9", "8", "12"], correct: 1 },
+        { text: "به چند روش می‌توان \\(3\\) کتاب متفاوت را در قفسه مرتب کرد؟", options: ["3", "6", "9", "1"], correct: 1 },
+        { text: "از حروف کلمه «کتاب» چند کلمه سه حرفی بدون تکرار حروف می‌توان ساخت؟", options: ["24", "12", "60", "4"], correct: 0 },
+        { text: "از بین \\(5\\) نفر، انتخاب یک تیم \\(2\\) نفره به چند طریق امکان‌پذیر است؟", options: ["10", "20", "5", "25"], correct: 0 },
+        { text: "یک تاس انداخته می‌شود. احتمال آمدن عدد زوج چقدر است؟", options: ["\\(\\frac{1}{2}\\)", "\\(\\frac{1}{3}\\)", "\\(\\frac{1}{6}\\)", "\\(\\frac{2}{3}\\)"], correct: 0 },
+        { text: "دو سکه را با هم می‌اندازیم. احتمال اینکه هر دو رو بیایند چقدر است؟", options: ["\\(\\frac{1}{4}\\)", "\\(\\frac{1}{2}\\)", "\\(\\frac{1}{3}\\)", "1"], correct: 0 },
+        { text: "کیسه‌ای شامل \\(4\\) مهره قرمز و \\(3\\) مهره آبی است. دو مهره بدون جایگذاری برمی‌داریم. احتمال قرمز بودن هر دو چقدر است؟", options: ["\\(\\frac{2}{7}\\)", "\\(\\frac{1}{7}\\)", "\\(\\frac{4}{7}\\)", "\\(\\frac{6}{21}\\)"], correct: 0 },
+        { text: "اگر \\(P(A)=0.3\\) باشد، احتمال متمم \\(A\\) چقدر است؟", options: ["0.7", "0.3", "0", "1"], correct: 0 },
+        { text: "از بین اعداد \\(1\\) تا \\(10\\)، یک عدد تصادفی انتخاب می‌شود. احتمال مضرب \\(3\\) بودن آن چقدر است؟", options: ["\\(\\frac{3}{10}\\)", "\\(\\frac{1}{5}\\)", "\\(\\frac{2}{5}\\)", "\\(\\frac{1}{2}\\)"], correct: 0 }
+    ];
+    const TOTAL_QS = QUESTIONS.length;
+    const TOTAL_SCORE = 20;
+
+    // کلیدهای ذخیره‌سازی
+    const STORAGE_KEY_STARTED = "math_exam_started";
+    const STORAGE_KEY_STUDENT = "math_exam_student";
+    const STORAGE_KEY_ANSWERS = "math_exam_answers";
+    const STORAGE_KEY_FINISHED = "math_exam_finished";
+    const STORAGE_KEY_FINISH_TIME = "math_exam_finish_time";
+
+    let currentQ = 0;
+    let studentInfo = null;
+    let answers = new Array(TOTAL_QS).fill(null);
+    let examFinished = false;
+    let finishTimestamp = null;
+    let timerInterval = null;
+    let timeLeft = 45 * 60;
+
+    const app = document.getElementById("app");
+
+    // ======================= توابع کمکی =======================
+    function saveToLocal() {
+        if (studentInfo) localStorage.setItem(STORAGE_KEY_STUDENT, JSON.stringify(studentInfo));
+        localStorage.setItem(STORAGE_KEY_ANSWERS, JSON.stringify(answers));
+    }
+
+    function loadFromLocal() {
+        const storedStudent = localStorage.getItem(STORAGE_KEY_STUDENT);
+        if (storedStudent) studentInfo = JSON.parse(storedStudent);
+        const storedAnswers = localStorage.getItem(STORAGE_KEY_ANSWERS);
+        if (storedAnswers) answers = JSON.parse(storedAnswers);
+        const finishedFlag = localStorage.getItem(STORAGE_KEY_FINISHED);
+        if (finishedFlag === "true") examFinished = true;
+        const ft = localStorage.getItem(STORAGE_KEY_FINISH_TIME);
+        if (ft) finishTimestamp = parseInt(ft);
+    }
+
+    function computeScore() {
+        let score = 0;
+        for (let i = 0; i < TOTAL_QS; i++) {
+            if (answers[i] !== null && answers[i] === QUESTIONS[i].correct) score++;
+        }
+        return score;
+    }
+
+    // ======================= ذخیره در گوگل درایو =======================
+    // ⚠️ IMPORTANT: لینک Web App خود را در اینجا قرار دهید ⚠️
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"; // <-- این را عوض کنید
+
+    async function saveToGoogleDrive(student, score, answersList) {
+        if (GOOGLE_SCRIPT_URL.includes("YOUR_SCRIPT_ID")) {
+            console.warn("لطفاً لینک صحیح Web App را در کد قرار دهید.");
+            return;
+        }
+        const payload = {
+            name: student.name,
+            family: student.family,
+            classNumber: student.classNumber,
+            studentCode: student.studentCode,
+            score: score,
+            total: TOTAL_SCORE,
+            answers: answersList,
+            timestamp: new Date().toISOString()
+        };
+        try {
+            await fetch(GOOGLE_SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            console.log("✅ نتایج با موفقیت به گوگل درایو ارسال شد.");
+        } catch(e) {
+            console.error("❌ خطا در ارسال به گوگل:", e);
+        }
+    }
+
+    function canShowAnswers() {
+        if (!examFinished || !finishTimestamp) return false;
+        const oneHour = 60 * 60 * 1000;
+        return (Date.now() - finishTimestamp) >= oneHour;
+    }
+
+    // ======================= صفحه ثبت نام =======================
+    function renderRegister() {
+        app.innerHTML = `
+            <div class="register-box">
+                <h2>📚 آزمون ریاضی دهم تجربی</h2>
+                <p style="margin:12px 0">بسم الله الرحمن الرحیم</p>
+                <p>لطفاً اطلاعات خود را وارد کنید</p>
+                <div style="text-align:right">
+                    <input type="text" id="name" placeholder="نام" autocomplete="off">
+                    <input type="text" id="family" placeholder="نام خانوادگی">
+                    <input type="text" id="classNum" placeholder="شماره کلاس">
+                    <input type="text" id="studentCode" placeholder="کد دانش‌آموزی">
+                </div>
+                <button id="startExamBtn">شروع آزمون (۴۵ دقیقه)</button>
+                <div id="regError" class="error-msg"></div>
+            </div>
+        `;
+        document.getElementById("startExamBtn").addEventListener("click", () => {
+            const name = document.getElementById("name").value.trim();
+            const family = document.getElementById("family").value.trim();
+            const classNum = document.getElementById("classNum").value.trim();
+            const studentCode = document.getElementById("studentCode").value.trim();
+            if (!name || !family || !classNum || !studentCode) {
+                document.getElementById("regError").innerText = "تمامی فیلدها الزامی است";
+                return;
+            }
+            studentInfo = { name, family, classNumber: classNum, studentCode };
+            localStorage.setItem(STORAGE_KEY_STARTED, "true");
+            localStorage.setItem("exam_start_time", Date.now().toString());
+            saveToLocal();
+            startExam();
+        });
+    }
+
+    // ======================= شروع و مدیریت آزمون =======================
+    function startExam() {
+        const startTime = parseInt(localStorage.getItem("exam_start_time"));
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        timeLeft = Math.max(0, 45*60 - elapsed);
+        if (timeLeft <= 0) {
+            endExam();
+            return;
+        }
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            if (examFinished) return;
+            if (timeLeft <= 1) {
+                clearInterval(timerInterval);
+                endExam();
+            } else {
+                timeLeft--;
+                localStorage.setItem("exam_time_left", timeLeft);
+                renderQuestion();
+            }
+        }, 1000);
+        renderQuestion();
+    }
+
+    function renderQuestion() {
+        if (examFinished) { renderResult(); return; }
+        if (!studentInfo) { renderRegister(); return; }
+        const q = QUESTIONS[currentQ];
+        const selectedIndex = answers[currentQ];
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        const progressPercent = ((currentQ+1)/TOTAL_QS)*100;
+
+        let optionsHtml = '';
+        q.options.forEach((opt, idx) => {
+            const checked = (selectedIndex === idx) ? 'checked' : '';
+            optionsHtml += `
+                <div class="option" data-val="${idx}">
+                    <input type="radio" name="q_option" id="opt_${idx}" value="${idx}" ${checked}>
+                    <label for="opt_${idx}">${String.fromCharCode(65+idx)} - ${opt}</label>
+                </div>
+            `;
+        });
+
+        const html = `
+            <div class="info-bar">
+                <div class="teacher-info">👨‍🏫 دبیر: میثم یعقوبیان | مدرسه غدیر | پایه دهم تجربی</div>
+                <div class="timer-area">⏱️ زمان باقی: ${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}</div>
+            </div>
+            <div class="progress-section">
+                <div class="progress-bar-container"><div class="progress-fill" style="width: ${progressPercent}%"></div></div>
+                <div class="question-counter">سوال ${currentQ+1} از ${TOTAL_QS}</div>
+            </div>
+            <div class="question-card">
+                <div class="question-text">❓ ${q.text}</div>
+                <div class="options" id="optionsContainer">${optionsHtml}</div>
+                <div class="nav-buttons">
+                    <button id="prevBtn" ${currentQ===0 ? 'disabled' : ''}>قبلی</button>
+                    <button id="nextBtn">بعدی</button>
+                </div>
+                ${currentQ === TOTAL_QS-1 ? '<button id="finishExamBtn" class="submit-btn">پایان آزمون و مشاهده نتیجه</button>' : ''}
+            </div>
+        `;
+        app.innerHTML = html;
+
+        document.querySelectorAll('.option').forEach(opt => {
+            const radio = opt.querySelector('input[type="radio"]');
+            if (radio) {
+                radio.addEventListener('change', () => {
+                    answers[currentQ] = parseInt(opt.dataset.val);
+                    saveToLocal();
+                });
+            }
+            opt.addEventListener('click', () => {
+                const radio = opt.querySelector('input[type="radio"]');
+                if (radio && !radio.checked) {
+                    radio.checked = true;
+                    answers[currentQ] = parseInt(opt.dataset.val);
+                    saveToLocal();
+                }
+            });
+        });
+
+        document.getElementById("prevBtn")?.addEventListener("click", () => { if (currentQ > 0) { currentQ--; renderQuestion(); } });
+        document.getElementById("nextBtn")?.addEventListener("click", () => { if (currentQ < TOTAL_QS-1) { currentQ++; renderQuestion(); } });
+        const finishBtn = document.getElementById("finishExamBtn");
+        if (finishBtn) {
+            finishBtn.addEventListener("click", () => {
+                if (confirm("آیا برای پایان آزمون و مشاهده نتیجه اطمینان دارید؟")) {
+                    endExam();
+                }
+            });
+        }
+        if (window.MathJax) MathJax.typesetPromise();
+    }
+
+    // پایان آزمون + ذخیره خودکار در گوگل
+    function endExam() {
+        if (examFinished) return;
+        examFinished = true;
+        finishTimestamp = Date.now();
+        localStorage.setItem(STORAGE_KEY_FINISHED, "true");
+        localStorage.setItem(STORAGE_KEY_FINISH_TIME, finishTimestamp.toString());
+        if (timerInterval) clearInterval(timerInterval);
+
+        // 🟢 ذخیره خودکار در گوگل درایو
+        if (studentInfo) {
+            const score = computeScore();
+            saveToGoogleDrive(studentInfo, score, answers);
+        }
+
+        renderResult();
+    }
+
+    function renderResult() {
+        if (timerInterval) clearInterval(timerInterval);
+        const score = computeScore();
+        const canShow = canShowAnswers();
+
+        let answersTable = '';
+        if (canShow) {
+            answersTable = '<div style="margin-top:20px; text-align:right; background:#f1f5f9; padding:12px; border-radius:24px;"><h4>پاسخ صحیح سوالات:</h4>';
+            for (let i=0; i<TOTAL_QS; i++) {
+                const correctIdx = QUESTIONS[i].correct;
+                const correctText = QUESTIONS[i].options[correctIdx];
+                answersTable += `<p><strong>سوال ${i+1}:</strong> ${correctText}</p>`;
+            }
+            answersTable += '</div>';
+        } else {
+            const remainSec = Math.max(0, 3600 - Math.floor((Date.now() - finishTimestamp)/1000));
+            const minutesRem = Math.floor(remainSec / 60);
+            answersTable = `<p style="margin-top:16px; background:#e2e8f0; padding:12px; border-radius:20px;">🔒 پاسخ‌های صحیح ${minutesRem} دقیقهٔ دیگر قابل مشاهده است.</p>`;
+        }
+
+        const resultHtml = `
+            <div class="result-card">
+                <h2>📊 گزارش نهایی آزمون</h2>
+                <p><strong>نام و نام خانوادگی:</strong> ${studentInfo.name} ${studentInfo.family}</p>
+                <p><strong>کلاس:</strong> ${studentInfo.classNumber} &nbsp;|&nbsp; <strong>کد دانش‌آموزی:</strong> ${studentInfo.studentCode}</p>
+                <div class="score">نمره شما: ${score} از ${TOTAL_SCORE}</div>
+                ${answersTable}
+                <footer>آزمون ریاضی دهم - طراحی شده برای نوجوانان</footer>
+            </div>
+        `;
+        app.innerHTML = resultHtml;
+        if (window.MathJax) MathJax.typesetPromise();
+    }
+
+    // ======================= مقداردهی اولیه =======================
+    function init() {
+        const alreadyStarted = localStorage.getItem(STORAGE_KEY_STARTED);
+        const finished = localStorage.getItem(STORAGE_KEY_FINISHED) === "true";
+        if (finished) {
+            loadFromLocal();
+            if (studentInfo) {
+                examFinished = true;
+                finishTimestamp = parseInt(localStorage.getItem(STORAGE_KEY_FINISH_TIME));
+                renderResult();
+            } else {
+                app.innerHTML = "<div class='register-box'>شما قبلاً آزمون را به پایان رسانده‌اید. امکان شرکت مجدد وجود ندارد.</div>";
+            }
+            return;
+        }
+        if (alreadyStarted === "true") {
+            loadFromLocal();
+            if (studentInfo) startExam();
+            else renderRegister();
+        } else {
+            renderRegister();
+        }
+    }
+    init();
+</script>
+</body>
+</html>
