@@ -199,31 +199,32 @@
 <div class="container" id="app"></div>
 
 <script>
-    // ======================= سوالات (بر اساس JSON طراحیشده) =======================
+    // ======================= ۲۰ سوال اصلی (بر اساس کتاب ریاضی و آمار ۱) =======================
+    // هر سوال شامل متن، گزینه‌ها، پاسخ صحیح (شاخص ۰ تا ۳)، وزن (نمره) = ۱، فصل مربوطه
     const MASTER_QUESTIONS = [
-        { text: "معادله \\(2x + 3 = 7\\) را حل کنید.", options: ["1", "2", "3", "4"], correct: 1, weight: 1, difficulty: "easy", chapter: 1 },
-        { text: "ریشه‌های معادله \\(x^2 - 5x + 6 = 0\\) کدامند؟", options: ["2 و 3", "2 و -3", "-2 و 3", "-2 و -3"], correct: 0, weight: 1, difficulty: "medium", chapter: 1 },
-        { text: "در معادله \\(ax^2 + bx + c = 0\\)، اگر \\(\\Delta = b^2 - 4ac\\) مثبت باشد، معادله چند ریشه حقیقی دارد؟", options: ["0", "1", "2", "3"], correct: 2, weight: 1, difficulty: "medium", chapter: 1 },
-        { text: "کدام یک از روابط زیر یک تابع است؟", options: ["{(1,2), (1,3)}", "{(2,3), (3,3)}", "{(1,2), (2,2), (1,3)}", "{(1,4), (1,5)}"], correct: 1, weight: 1, difficulty: "easy", chapter: 2 },
-        { text: "ضابطه تابع خطی که از نقاط \\((0,0)\\) و \\((1,2)\\) می‌گذرد، کدام است؟", options: ["\\(y = 2x\\)", "\\(y = x+2\\)", "\\(y = 2x+1\\)", "\\(y = x\\)"], correct: 0, weight: 1, difficulty: "easy", chapter: 2 },
-        { text: "نمودار تابع \\(y = x^2\\) چه شکلی است؟", options: ["خط راست", "سهمی رو به بالا", "سهمی رو به پایین", "دایره"], correct: 1, weight: 1, difficulty: "medium", chapter: 2 },
-        { text: "دامنه تابع \\(f(x) = \\frac{1}{x-2}\\) کدام است؟", options: ["همه اعداد حقیقی", "همه اعداد به جز 2", "همه اعداد به جز -2", "\\(x > 2\\)"], correct: 1, weight: 1, difficulty: "medium", chapter: 2 },
-        { text: "اگر \\(f(x) = 3x - 4\\) باشد، مقدار \\(f(2)\\) کدام است؟", options: ["2", "3", "0", "1"], correct: 0, weight: 1, difficulty: "medium", chapter: 2 },
-        { text: "کدام روش برای گردآوری داده‌های «تعداد خودروهای عبوری از یک تقاطع» مناسب است؟", options: ["پرسش‌نامه", "مصاحبه", "مشاهده", "آزمایش"], correct: 2, weight: 1, difficulty: "easy", chapter: 3 },
-        { text: "میانگین اعداد 10، 20، 30، 40، 50 کدام است؟", options: ["25", "30", "35", "40"], correct: 1, weight: 1, difficulty: "easy", chapter: 3 },
-        { text: "کدام معیار گرایش به مرکز تحت تأثیر داده‌های دورافتاده قرار نمی‌گیرد؟", options: ["میانگین", "میانه", "دامنه", "واریانس"], correct: 1, weight: 1, difficulty: "easy", chapter: 3 },
-        { text: "در مجموعه داده‌های \\(\\{5, 7, 9, 11, 13\\}\\)، میانه کدام است؟", options: ["5", "7", "9", "11"], correct: 2, weight: 1, difficulty: "medium", chapter: 3 },
-        { text: "انحراف معیار داده‌های \\(\\{10, 10, 10, 10\\}\\) چند است؟", options: ["10", "5", "0", "1"], correct: 2, weight: 1, difficulty: "medium", chapter: 3 },
-        { text: "دامنه تغییرات داده‌های \\(\\{2, 8, 15, 3, 20\\}\\) کدام است؟", options: ["15", "18", "20", "22"], correct: 1, weight: 1, difficulty: "medium", chapter: 3 },
-        { text: "اگر میانگین داده‌های \\(\\{x, 10, 15\\}\\) برابر 15 باشد، مقدار \\(x\\) کدام است؟", options: ["10", "15", "20", "25"], correct: 2, weight: 1, difficulty: "medium", chapter: 3 },
-        { text: "کدام نمودار برای نمایش درصد اجزای یک کل مناسب‌تر است؟", options: ["نمودار میله‌ای", "نمودار دایره‌ای", "نمودار جعبه‌ای", "نمودار حبابی"], correct: 1, weight: 1, difficulty: "easy", chapter: 4 },
-        { text: "در نمودار جعبه‌ای، چه چیزی نشان داده نمی‌شود؟", options: ["میانه", "دامنه میان‌چارکی", "میانگین", "چارک اول و سوم"], correct: 2, weight: 1, difficulty: "easy", chapter: 4 },
-        { text: "کدام نمودار برای مقایسه سه متغیر عددی به طور همزمان مناسب است؟", options: ["نمودار میله‌ای", "نمودار دایره‌ای", "نمودار حبابی", "نمودار نقطه‌ای"], correct: 2, weight: 1, difficulty: "medium", chapter: 4 },
-        { text: "در نمودار راداری، هر شعاع نشان‌دهنده چیست؟", options: ["یک مشاهده", "یک متغیر", "یک داده دورافتاده", "دامنه تغییرات"], correct: 1, weight: 1, difficulty: "medium", chapter: 4 },
-        { text: "کدام یک از موارد زیر متغیر کیفی است؟", options: ["قد", "وزن", "رنگ چشم", "سن"], correct: 2, weight: 1, difficulty: "medium", chapter: 4 }
+        { text: "معادله \\(2x + 3 = 7\\) را حل کنید.", options: ["1", "2", "3", "4"], correct: 1, weight: 1, chapter: 1 },
+        { text: "ریشه‌های معادله \\(x^2 - 5x + 6 = 0\\) کدامند؟", options: ["2 و 3", "2 و -3", "-2 و 3", "-2 و -3"], correct: 0, weight: 1, chapter: 1 },
+        { text: "در معادله \\(ax^2 + bx + c = 0\\)، اگر \\(\\Delta = b^2 - 4ac\\) مثبت باشد، معادله چند ریشه حقیقی دارد؟", options: ["0", "1", "2", "3"], correct: 2, weight: 1, chapter: 1 },
+        { text: "کدام یک از روابط زیر یک تابع است؟", options: ["{(1,2), (1,3)}", "{(2,3), (3,3)}", "{(1,2), (2,2), (1,3)}", "{(1,4), (1,5)}"], correct: 1, weight: 1, chapter: 2 },
+        { text: "ضابطه تابع خطی که از نقاط \\((0,0)\\) و \\((1,2)\\) می‌گذرد، کدام است؟", options: ["\\(y = 2x\\)", "\\(y = x+2\\)", "\\(y = 2x+1\\)", "\\(y = x\\)"], correct: 0, weight: 1, chapter: 2 },
+        { text: "نمودار تابع \\(y = x^2\\) چه شکلی است؟", options: ["خط راست", "سهمی رو به بالا", "سهمی رو به پایین", "دایره"], correct: 1, weight: 1, chapter: 2 },
+        { text: "دامنه تابع \\(f(x) = \\frac{1}{x-2}\\) کدام است؟", options: ["همه اعداد حقیقی", "همه اعداد به جز 2", "همه اعداد به جز -2", "\\(x > 2\\)"], correct: 1, weight: 1, chapter: 2 },
+        { text: "اگر \\(f(x) = 3x - 4\\) باشد، مقدار \\(f(2)\\) کدام است؟", options: ["2", "3", "0", "1"], correct: 0, weight: 1, chapter: 2 },
+        { text: "کدام روش برای گردآوری داده‌های «تعداد خودروهای عبوری از یک تقاطع» مناسب است؟", options: ["پرسش‌نامه", "مصاحبه", "مشاهده", "آزمایش"], correct: 2, weight: 1, chapter: 3 },
+        { text: "میانگین اعداد 10، 20، 30، 40، 50 کدام است؟", options: ["25", "30", "35", "40"], correct: 1, weight: 1, chapter: 3 },
+        { text: "کدام معیار گرایش به مرکز تحت تأثیر داده‌های دورافتاده قرار نمی‌گیرد؟", options: ["میانگین", "میانه", "دامنه", "واریانس"], correct: 1, weight: 1, chapter: 3 },
+        { text: "در مجموعه داده‌های \\(\\{5, 7, 9, 11, 13\\}\\)، میانه کدام است؟", options: ["5", "7", "9", "11"], correct: 2, weight: 1, chapter: 3 },
+        { text: "انحراف معیار داده‌های \\(\\{10, 10, 10, 10\\}\\) چند است؟", options: ["10", "5", "0", "1"], correct: 2, weight: 1, chapter: 3 },
+        { text: "دامنه تغییرات داده‌های \\(\\{2, 8, 15, 3, 20\\}\\) کدام است？", options: ["15", "18", "20", "22"], correct: 1, weight: 1, chapter: 3 },
+        { text: "اگر میانگین داده‌های \\(\\{x, 10, 15\\}\\) برابر 15 باشد، مقدار \\(x\\) کدام است؟", options: ["10", "15", "20", "25"], correct: 2, weight: 1, chapter: 3 },
+        { text: "کدام نمودار برای نمایش درصد اجزای یک کل مناسب‌تر است؟", options: ["نمودار میله‌ای", "نمودار دایره‌ای", "نمودار جعبه‌ای", "نمودار حبابی"], correct: 1, weight: 1, chapter: 4 },
+        { text: "در نمودار جعبه‌ای، چه چیزی نشان داده نمی‌شود؟", options: ["میانه", "دامنه میان‌چارکی", "میانگین", "چارک اول و سوم"], correct: 2, weight: 1, chapter: 4 },
+        { text: "کدام نمودار برای مقایسه سه متغیر عددی به طور همزمان مناسب است؟", options: ["نمودار میله‌ای", "نمودار دایره‌ای", "نمودار حبابی", "نمودار نقطه‌ای"], correct: 2, weight: 1, chapter: 4 },
+        { text: "در نمودار راداری، هر شعاع نشان‌دهنده چیست؟", options: ["یک مشاهده", "یک متغیر", "یک داده دورافتاده", "دامنه تغییرات"], correct: 1, weight: 1, chapter: 4 },
+        { text: "کدام یک از موارد زیر متغیر کیفی است؟", options: ["قد", "وزن", "رنگ چشم", "سن"], correct: 2, weight: 1, chapter: 4 }
     ];
 
-    // کلیدهای ذخیره‌سازی
+    // کلیدهای ذخیره‌سازی در localStorage
     const STORAGE_KEY_STARTED = "mathStats_exam_started";
     const STORAGE_KEY_STUDENT = "mathStats_exam_student";
     const STORAGE_KEY_ANSWERS = "mathStats_exam_answers";
@@ -238,9 +239,9 @@
     let examFinished = false;
     let finishTimestamp = null;
     let timerInterval = null;
-    let timeLeft = 30 * 60;        // 30 دقیقه
-    let QUESTIONS = [];            // سوالات (با ترتیب نهایی)
-    let shuffleEnabled = true;     // پیش‌فرض تصادفی کردن
+    let timeLeft = 30 * 60;        // ۳۰ دقیقه
+    let QUESTIONS = [];            // ترتیب نهایی سوالات (تصادفی یا اصلی)
+    let shuffleEnabled = true;     // آیا سوالات تصادفی شوند؟
 
     const app = document.getElementById("app");
 
@@ -253,10 +254,12 @@
         return arr;
     }
 
+    // محاسبه مجموع نمرات کل (بر اساس وزن هر سوال)
     function calcTotalWeight(questions) {
         return questions.reduce((sum, q) => sum + (q.weight || 1), 0);
     }
 
+    // ذخیره وضعیت در localStorage
     function saveToLocal() {
         if (studentInfo) localStorage.setItem(STORAGE_KEY_STUDENT, JSON.stringify(studentInfo));
         localStorage.setItem(STORAGE_KEY_ANSWERS, JSON.stringify(answers));
@@ -283,6 +286,7 @@
         if (ft) finishTimestamp = parseInt(ft);
     }
 
+    // محاسبه نمره کسب شده بر اساس وزن سوالات
     function computeScore() {
         let earned = 0;
         for (let i = 0; i < QUESTIONS.length; i++) {
@@ -293,7 +297,7 @@
         return earned;
     }
 
-    // اطلاعات خودکار مرورگر
+    // اطلاعات خودکار مرورگر و دستگاه
     function getAutoInfo() {
         try {
             function getDeviceType() {
@@ -318,14 +322,15 @@
         } catch(e) { return {}; }
     }
 
-    // ======================= ذخیره در گوگل درایو =======================
-    // ⚠️ لطفاً لینک Web App خود را در اینجا قرار دهید (اگر ندارید، مقدار پیش‌فرض را رها کنید)
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwvqQRmdrm3wirtInov5GePa6uUzcrRo82KXH1NpVgBgjC5BlfimOpTpWoYsolU64IX/exec";
+    // ======================= ذخیره در گوگل درایو (نیازمند تنظیم لینک) =======================
+    // ⚠️ کاربر عزیز: برای ذخیره خودکار نتایج در Google Sheet، لطفاً لینک Web App خود را در آدرس زیر قرار دهید.
+    // راهنما: یک Apps Script با کد doPost ایجاد کنید و آن را به عنوان Web App (دسترسی Anyone) منتشر کنید.
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwvqQRmdrm3wirtInov5GePa6uUzcrRo82KXH1NpVgBgjC5BlfimOpTpWoYsolU64IX/exec";  // <--- لینک خود را اینجا وارد کنید
 
     async function saveToGoogleDrive(student, earnedScore, answersList, startTime, endTime) {
         if (!student) return;
         if (GOOGLE_SCRIPT_URL.includes("YOUR_SCRIPT_ID")) {
-            console.warn("لینک Google Apps Script تنظیم نشده است. داده فقط در مرورگر ذخیره شد.");
+            console.warn("⚠️ لینک Google Apps Script تنظیم نشده است. داده فقط در مرورگر ذخیره شد.");
             return;
         }
         const auto = getAutoInfo();
@@ -350,24 +355,25 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
-            console.log("نتایج با موفقیت به گوگل درایو ارسال شد.");
+            console.log("✅ نتایج با موفقیت به Google Drive ارسال شد.");
         } catch(e) {
-            console.error("خطا در ارسال به گوگل:", e);
+            console.error("❌ خطا در ارسال به Google Drive:", e);
         }
     }
 
+    // آیا می‌توان پاسخ‌های صحیح را نشان داد؟ (یک ساعت پس از پایان آزمون)
     function canShowAnswers() {
         if (!examFinished || !finishTimestamp) return false;
         const oneHour = 60 * 60 * 1000;
         return (Date.now() - finishTimestamp) >= oneHour;
     }
 
-    // ======================= صفحه ثبت نام با گزینه تصادفی =======================
+    // ======================= صفحه ثبت نام (ورود اطلاعات و انتخاب تصادفی) =======================
     function renderRegister() {
         app.innerHTML = `
             <div class="register-box">
                 <h2>📊 آزمون ریاضی و آمار ۱</h2>
-                <p style="margin:10px 0">پایه دهم | رشته انسانی</p>
+                <p style="margin:10px 0">پایه دهم | رشته علوم انسانی و معارف اسلامی</p>
                 <p style="margin:12px 0">بسم الله الرحمن الرحیم</p>
                 <p>لطفاً اطلاعات خود را وارد کنید</p>
                 <div style="text-align:right">
@@ -377,7 +383,7 @@
                     <input type="text" id="studentCode" placeholder="کد دانش‌آموزی">
                 </div>
                 <div class="shuffle-option">
-                    <label><input type="checkbox" id="shuffleCheckbox" ${shuffleEnabled ? 'checked' : ''}> ترتیب تصادفی سوالات</label>
+                    <label><input type="checkbox" id="shuffleCheckbox" ${shuffleEnabled ? 'checked' : ''}> ترتیب تصادفی سوالات (پیش‌فرض فعال)</label>
                 </div>
                 <button id="startExamBtn">شروع آزمون (۳۰ دقیقه)</button>
                 <div id="regError" class="error-msg"></div>
@@ -399,7 +405,7 @@
             studentInfo = { name, family, classNumber: classNum, studentCode };
             localStorage.setItem(STORAGE_KEY_STARTED, "true");
             localStorage.setItem("exam_start_time", Date.now().toString());
-            // ساخت سوالات (تصادفی یا اصلی)
+            // ساخت آرایه نهایی سوالات بر اساس گزینه تصادفی
             let baseArray = [...MASTER_QUESTIONS];
             if (shuffleEnabled) {
                 baseArray = shuffleArray(baseArray);
@@ -411,7 +417,7 @@
         });
     }
 
-    // ======================= شروع و مدیریت آزمون =======================
+    // ======================= شروع آزمون و تایمر =======================
     function startExam() {
         const startTime = parseInt(localStorage.getItem("exam_start_time"));
         const elapsed = Math.floor((Date.now() - startTime) / 1000);
@@ -435,6 +441,7 @@
         renderQuestion();
     }
 
+    // نمایش هر سوال در صفحه جداگانه
     function renderQuestion() {
         if (examFinished) { renderResult(); return; }
         if (!studentInfo || !QUESTIONS.length) { renderRegister(); return; }
@@ -476,7 +483,7 @@
         `;
         app.innerHTML = html;
 
-        // رویدادهای انتخاب گزینه
+        // ثبت تغییرات گزینه‌ها
         document.querySelectorAll('.option').forEach(opt => {
             const radio = opt.querySelector('input[type="radio"]');
             if (radio) {
@@ -485,7 +492,7 @@
                     saveToLocal();
                 });
             }
-            opt.addEventListener('click', (e) => {
+            opt.addEventListener('click', () => {
                 const radio = opt.querySelector('input[type="radio"]');
                 if (radio && !radio.checked) {
                     radio.checked = true;
@@ -512,6 +519,7 @@
         if (window.MathJax) MathJax.typesetPromise();
     }
 
+    // پایان آزمون: ذخیره خودکار در گوگل درایو و نمایش نتیجه
     function endExam() {
         if (examFinished) return;
         examFinished = true;
@@ -529,6 +537,7 @@
         renderResult();
     }
 
+    // نمایش نتیجه نهایی (نمره و پس از یک ساعت پاسخ‌های صحیح)
     function renderResult() {
         const earned = computeScore();
         const totalWeight = calcTotalWeight(QUESTIONS);
