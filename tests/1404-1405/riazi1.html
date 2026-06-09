@@ -42,31 +42,31 @@
 <div class="container" id="app"></div>
 
 <script>
-    // ======================= سوالات با فرمت LaTeX =======================
+    // ======================= سوالات (20 سوال با فرمت LaTeX) =======================
     const QUESTIONS = [
         { text: "مجموعه اعداد طبیعی کوچک‌تر از \\(5\\) کدام است؟", options: ["\\(\\{0,1,2,3,4\\}\\)", "\\(\\{1,2,3,4\\}\\)", "\\(\\{1,2,3,4,5\\}\\)", "\\(\\{0,1,2,3,4,5\\}\\)"], correct: 1 },
-        { text: "در مثلث قائم‌الزاویه، اگر \\(\\sin A = 0.6\\) باشد، \\(\\cos A\\) کدام است؟", options: ["\\(0.4\\)", "\\(0.6\\)", "\\(0.8\\)", "\\(0.75\\)"], correct: 2 },
-        { text: "اگر زاویه \\(\\theta\\) در ربع سوم باشد و \\(\\tan \\theta = 1\\)، آنگاه \\(\\theta\\) چند درجه است؟", options: ["\\(45°\\)", "\\(135°\\)", "\\(225°\\)", "\\(315°\\)"], correct: 2 },
+        { text: "در مثلث قائم‌الزاویه، اگر \\(\\sin A = 0.6\\) باشد، \\(\\cos A\\) کدام است؟", options: ["0.4", "0.6", "0.8", "0.75"], correct: 2 },
+        { text: "اگر زاویه \\(\\theta\\) در ربع سوم باشد و \\(\\tan \\theta = 1\\)، آنگاه \\(\\theta\\) چند درجه است؟", options: ["45°", "135°", "225°", "315°"], correct: 2 },
         { text: "حاصل عبارت \\(\\sqrt{18}\\) ساده شده برابر است با:", options: ["\\(3\\sqrt{2}\\)", "\\(2\\sqrt{3}\\)", "\\(6\\sqrt{2}\\)", "\\(9\\sqrt{2}\\)"], correct: 0 },
-        { text: "مقدار \\(8^{\\frac{2}{3}}\\) کدام است؟", options: ["\\(4\\)", "\\(8\\)", "\\(16\\)", "\\(2\\)"], correct: 0 },
+        { text: "مقدار \\(8^{\\frac{2}{3}}\\) کدام است؟", options: ["4", "8", "16", "2"], correct: 0 },
         { text: "مجموعه جواب معادله \\(x^2 - 4 = 0\\) کدام است؟", options: ["\\(\\{2\\}\\)", "\\(\\{2, -2\\}\\)", "\\(\\{4\\}\\)", "\\(\\varnothing\\)"], correct: 1 },
-        { text: "معادله \\(x^2 - 6x + 9 = 0\\) چند ریشه حقیقی دارد؟", options: ["\\(0\\)", "\\(1\\) (ریشه مضاعف)", "\\(2\\) ریشه متمایز", "نامشخص"], correct: 1 },
-        { text: "تابع \\(f(x)=3x-2\\) با دامنه \\(\\{1,2,3\\}\\)، مقدار \\(f(2)\\) کدام است؟", options: ["\\(4\\)", "\\(5\\)", "\\(6\\)", "\\(7\\)"], correct: 0 },
+        { text: "معادله \\(x^2 - 6x + 9 = 0\\) چند ریشه حقیقی دارد؟", options: ["0", "1 (ریشه مضاعف)", "2 ریشه متمایز", "نامشخص"], correct: 1 },
+        { text: "تابع \\(f(x)=3x-2\\) با دامنه \\(\\{1,2,3\\}\\)، مقدار \\(f(2)\\) کدام است؟", options: ["4", "5", "6", "7"], correct: 0 },
         { text: "دامنه تابع \\(f(x)=\\sqrt{x-1}\\) کدام بازه است؟", options: ["\\([1,+\\infty)\\)", "\\((1,+\\infty)\\)", "\\((-\\infty,1]\\)", "\\(\\mathbb{R}\\)"], correct: 0 },
         { text: "دامنه تابع \\(f(x)=\\frac{1}{x-3}\\) کدام است؟", options: ["همه اعداد حقیقی", "همه اعداد حقیقی به جز \\(3\\)", "همه اعداد حقیقی به جز \\(-3\\)", "\\(x>3\\)"], correct: 1 },
-        { text: "تابع \\(f(x)=|x-2|\\)، مقدار \\(f(5)\\) کدام است؟", options: ["\\(3\\)", "\\(-3\\)", "\\(7\\)", "\\(5\\)"], correct: 0 },
-        { text: "با ارقام \\(1,2,3\\) چند عدد دو رقمی می‌توان ساخت (تکرار مجاز)؟", options: ["\\(6\\)", "\\(9\\)", "\\(8\\)", "\\(12\\)"], correct: 1 },
-        { text: "به چند روش می‌توان \\(3\\) کتاب متفاوت را در قفسه مرتب کرد؟", options: ["\\(3\\)", "\\(6\\)", "\\(9\\)", "\\(1\\)"], correct: 1 },
-        { text: "از حروف کلمه «کتاب» چند کلمه سه حرفی بدون تکرار حروف می‌توان ساخت؟", options: ["\\(24\\)", "\\(12\\)", "\\(60\\)", "\\(4\\)"], correct: 0 },
-        { text: "از بین \\(5\\) نفر، انتخاب یک تیم \\(2\\) نفره به چند طریق امکان‌پذیر است؟", options: ["\\(10\\)", "\\(20\\)", "\\(5\\)", "\\(25\\)"], correct: 0 },
+        { text: "تابع \\(f(x)=|x-2|\\)، مقدار \\(f(5)\\) کدام است؟", options: ["3", "-3", "7", "5"], correct: 0 },
+        { text: "با ارقام \\(1,2,3\\) چند عدد دو رقمی می‌توان ساخت (تکرار مجاز)؟", options: ["6", "9", "8", "12"], correct: 1 },
+        { text: "به چند روش می‌توان \\(3\\) کتاب متفاوت را در قفسه مرتب کرد؟", options: ["3", "6", "9", "1"], correct: 1 },
+        { text: "از حروف کلمه «کتاب» چند کلمه سه حرفی بدون تکرار حروف می‌توان ساخت؟", options: ["24", "12", "60", "4"], correct: 0 },
+        { text: "از بین \\(5\\) نفر، انتخاب یک تیم \\(2\\) نفره به چند طریق امکان‌پذیر است؟", options: ["10", "20", "5", "25"], correct: 0 },
         { text: "یک تاس انداخته می‌شود. احتمال آمدن عدد زوج چقدر است؟", options: ["\\(\\frac{1}{2}\\)", "\\(\\frac{1}{3}\\)", "\\(\\frac{1}{6}\\)", "\\(\\frac{2}{3}\\)"], correct: 0 },
-        { text: "دو سکه را با هم می‌اندازیم. احتمال اینکه هر دو رو بیایند چقدر است؟", options: ["\\(\\frac{1}{4}\\)", "\\(\\frac{1}{2}\\)", "\\(\\frac{1}{3}\\)", "\\(1\\)"], correct: 0 },
-        { text: "کیسه‌ای شامل \\(4\\) مهره قرمز و \\(3\\) مهره آبی است. دو مهره بدون جایگذاری برمی‌داریم. احتمال قرمز بودن هر دو چقدر است؟", options: ["\\(\\frac{2}{7}\\)", "\\(\\frac{1}{7}\\)", "\\(\\frac{4}{7}\\)", "\\(\\frac{6}{22}\\)"], correct: 0 },
-        { text: "اگر \\(P(A)=0.3\\) باشد، احتمال متمم \\(A\\) چقدر است؟", options: ["\\(0.7\\)", "\\(0.3\\)", "\\(0\\)", "\\(1\\)"], correct: 0 },
+        { text: "دو سکه را با هم می‌اندازیم. احتمال اینکه هر دو رو بیایند چقدر است؟", options: ["\\(\\frac{1}{4}\\)", "\\(\\frac{1}{2}\\)", "\\(\\frac{1}{3}\\)", "1"], correct: 0 },
+        { text: "کیسه‌ای شامل \\(4\\) مهره قرمز و \\(3\\) مهره آبی است. دو مهره بدون جایگذاری برمی‌داریم. احتمال قرمز بودن هر دو چقدر است؟", options: ["\\(\\frac{2}{7}\\)", "\\(\\frac{1}{7}\\)", "\\(\\frac{4}{7}\\)", "\\(\\frac{6}{21}\\)"], correct: 0 },
+        { text: "اگر \\(P(A)=0.3\\) باشد، احتمال متمم \\(A\\) چقدر است؟", options: ["0.7", "0.3", "0", "1"], correct: 0 },
         { text: "از بین اعداد \\(1\\) تا \\(10\\)، یک عدد تصادفی انتخاب می‌شود. احتمال مضرب \\(3\\) بودن آن چقدر است؟", options: ["\\(\\frac{3}{10}\\)", "\\(\\frac{1}{5}\\)", "\\(\\frac{2}{5}\\)", "\\(\\frac{1}{2}\\)"], correct: 0 }
     ];
     const TOTAL_QS = QUESTIONS.length;
-    const TOTAL_SCORE = 20;
+    const TOTAL_SCORE = TOTAL_QS; // هر سوال 1 نمره
 
     // کلیدهای ذخیره‌سازی
     const STORAGE_KEY_STARTED = "math_exam_started";
@@ -81,7 +81,7 @@
     let examFinished = false;
     let finishTimestamp = null;
     let timerInterval = null;
-    let timeLeft = 45 * 60;
+    let timeLeft = 45 * 60; // 45 دقیقه
 
     const app = document.getElementById("app");
 
@@ -110,15 +110,48 @@
         return score;
     }
 
-    // ======================= ذخیره در گوگل درایو =======================
-    // ⚠️ IMPORTANT: لینک Web App خود را در اینجا قرار دهید ⚠️
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx4jYVvwvqzB-j6ZZRs8ypSa2G7DcQ3cy06WgQZrupl-kF9jYSZ1G-kokcIr3fCXgSDrg/exec"; // <-- این را عوض کنید
+    // ======================= اطلاعات خودکار مرورگر =======================
+    function getAutoInfo() {
+        try {
+            function getDeviceType() {
+                const ua = navigator.userAgent;
+                if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) return "تبلت";
+                if (/Mobile|iPod|iPhone|Android|BlackBerry|Opera Mini|IEMobile/i.test(ua)) return "موبایل";
+                return "دسکتاپ";
+            }
+            return {
+                userAgent: navigator.userAgent || "نامشخص",
+                language: navigator.language || "نامشخص",
+                screenWidth: screen.width || 0,
+                screenHeight: screen.height || 0,
+                viewportWidth: window.innerWidth || 0,
+                viewportHeight: window.innerHeight || 0,
+                deviceType: getDeviceType(),
+                online: navigator.onLine !== undefined ? navigator.onLine : true,
+                cookieEnabled: navigator.cookieEnabled !== undefined ? navigator.cookieEnabled : false,
+                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || "نامشخص",
+                hardwareConcurrency: navigator.hardwareConcurrency || "نامشخص"
+            };
+        } catch(e) {
+            console.warn("خطا در دریافت اطلاعات خودکار", e);
+            return {
+                userAgent: "خطا", language: "نامشخص", screenWidth: 0, screenHeight: 0,
+                viewportWidth: 0, viewportHeight: 0, deviceType: "نامشخص", online: true,
+                cookieEnabled: false, timeZone: "نامشخص", hardwareConcurrency: "نامشخص"
+            };
+        }
+    }
 
-    async function saveToGoogleDrive(student, score, answersList) {
-        if (GOOGLE_SCRIPT_URL.includes("YOUR_SCRIPT_ID")) {
-            console.warn("لطفاً لینک صحیح Web App را در کد قرار دهید.");
+    // ======================= ذخیره در گوگل درایو =======================
+    // ⚠️ لطفاً لینک Web App خود را در اینجا قرار دهید ⚠️
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyI5SZv_MSMZl4Eg5OguSKCFAH2vgqwLhN4zYoHsOqbA6QvYHgxW42_mPKmf5GyrKh6/exec";
+
+    async function saveToGoogleDrive(student, score, answersList, startTime, endTime) {
+        if (!student) {
+            console.error("❌ اطلاعات دانش‌آموز موجود نیست");
             return;
         }
+        const auto = getAutoInfo();
         const payload = {
             name: student.name,
             family: student.family,
@@ -127,16 +160,38 @@
             score: score,
             total: TOTAL_SCORE,
             answers: answersList,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            // اطلاعات خودکار
+            userAgent: auto.userAgent,
+            deviceType: auto.deviceType,
+            screenResolution: `${auto.screenWidth}x${auto.screenHeight}`,
+            viewport: `${auto.viewportWidth}x${auto.viewportHeight}`,
+            language: auto.language,
+            timeZone: auto.timeZone,
+            online: auto.online,
+            cookieEnabled: auto.cookieEnabled,
+            hardwareConcurrency: auto.hardwareConcurrency,
+            // زمان شروع و پایان
+            startTime: startTime || "",
+            endTime: endTime || "",
+            durationSeconds: (startTime && endTime) ? (parseInt(endTime) - parseInt(startTime)) / 1000 : ""
         };
+
+        console.log("📤 ارسال به گوگل:", payload);
+
+        if (GOOGLE_SCRIPT_URL.includes("YOUR_SCRIPT_ID")) {
+            console.warn("⚠️ لطفاً لینک صحیح Web App را در کد قرار دهید.");
+            return;
+        }
+
         try {
-            await fetch(GOOGLE_SCRIPT_URL, {
+            const response = await fetch(GOOGLE_SCRIPT_URL, {
                 method: "POST",
                 mode: "no-cors",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
-            console.log("✅ نتایج با موفقیت به گوگل درایو ارسال شد.");
+            console.log("✅ درخواست ذخیره ارسال شد (در حالت no-cors نمی‌توان پاسخ را خواند)");
         } catch(e) {
             console.error("❌ خطا در ارسال به گوگل:", e);
         }
@@ -278,7 +333,6 @@
         if (window.MathJax) MathJax.typesetPromise();
     }
 
-    // پایان آزمون + ذخیره خودکار در گوگل
     function endExam() {
         if (examFinished) return;
         examFinished = true;
@@ -287,12 +341,12 @@
         localStorage.setItem(STORAGE_KEY_FINISH_TIME, finishTimestamp.toString());
         if (timerInterval) clearInterval(timerInterval);
 
-        // 🟢 ذخیره خودکار در گوگل درایو
+        const startTime = localStorage.getItem("exam_start_time");
+        const endTime = Date.now().toString();
         if (studentInfo) {
             const score = computeScore();
-            saveToGoogleDrive(studentInfo, score, answers);
+            saveToGoogleDrive(studentInfo, score, answers, startTime, endTime);
         }
-
         renderResult();
     }
 
