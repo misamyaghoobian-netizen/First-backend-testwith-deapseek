@@ -262,7 +262,7 @@
         document.getElementById("prevBtn")?.addEventListener("click", () => { if (currentQ > 0) { currentQ--; renderQuestion(); } });
         document.getElementById("nextBtn")?.addEventListener("click", () => { if (currentQ < QUESTIONS.length-1) { currentQ++; renderQuestion(); } });
         const finishBtn = document.getElementById("finishExamBtn");
-        if (finishBtn) finishBtn.addEventListener("click", () => { if (confirm("پایان؟")) endExam(); });
+        if (finishBtn) finishBtn.addEventListener("click", () => { if (confirm("آیا از پایان آزمون و ارسال نتایج اطمینان دارید؟")) endExam(); });
         if (window.MathJax) MathJax.typesetPromise();
     }
 
