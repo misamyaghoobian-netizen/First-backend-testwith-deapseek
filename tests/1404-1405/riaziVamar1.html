@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>آزمون ریاضی دهم تجربی | سوالات تصادفی</title>
+    <title>آزمون ریاضی دهم انسانی | سوالات تصادفی</title>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
     <style>
         /* استایل‌ها مانند قبل - برای اختصار حذف شده، ولی باید کامل باشد */
@@ -44,19 +44,35 @@
 <body>
 <div class="container" id="app"></div>
 
+
 <script>
     // ======================= سوالات اصلی (۲۰ سوال) =======================
     const MASTER_QUESTIONS = [
          { text: "معادله \\(2x + 3 = 7\\) را حل کنید.", options: ["1", "2", "3", "4"], correct: 1, weight: 1, difficulty: "easy", chapter: 1 },
-        { text: "ریشه‌های معادله \\(x^2 - 5x + 6 = 0\\) کدامند؟", options: ["2 و 3", "2 و -3", "-2 و 3", "-2 و -3"], correct: 0, weight: 1, difficulty: "medium", chapter: 1 },
+        { text: "ریشه‌های معادله \\(x^2 - 5x + 6 = 0\\) کدامند؟", options: ["\\( 2\\) و \\(3\\)", "\\(2\\) و \\(-3\\)", "\\(-2\\) و \\(3\\)", "\\(-2\\) و -\\(3\\)"], correct: 0, weight: 1, difficulty: "medium", chapter: 1 },
         { text: "در معادله \\(ax^2 + bx + c = 0\\)، اگر \\(\\Delta = b^2 - 4ac\\) مثبت باشد، معادله چند ریشه حقیقی دارد؟", options: ["0", "1", "2", "3"], correct: 2, weight: 1, difficulty: "medium", chapter: 1 },
         { text: "کدام یک از روابط زیر یک تابع است؟", options: ["{(1,2), (1,3)}", "{(2,3), (3,3)}", "{(1,2), (2,2), (1,3)}", "{(1,4), (1,5)}"], correct: 1, weight: 1, difficulty: "easy", chapter: 2 },
         { text: "ضابطه تابع خطی که از نقاط \\((0,0)\\) و \\((1,2)\\) می‌گذرد، کدام است؟", options: ["\\(y = 2x\\)", "\\(y = x+2\\)", "\\(y = 2x+1\\)", "\\(y = x\\)"], correct: 0, weight: 1, difficulty: "easy", chapter: 2 },
         { text: "نمودار تابع \\(y = x^2\\) چه شکلی است؟", options: ["خط راست", "سهمی رو به بالا", "سهمی رو به پایین", "دایره"], correct: 1, weight: 1, difficulty: "medium", chapter: 2 },
         { text: "دامنه تابع \\(f(x) = \\frac{1}{x-2}\\) کدام است؟", options: ["همه اعداد حقیقی", "همه اعداد به جز 2", "همه اعداد به جز -2", "\\(x > 2\\)"], correct: 1, weight: 1, difficulty: "medium", chapter: 2 },
-        { text: "اگر \\(f(x) = 3x - 4\\) باشد، مقدار \\(f(2)\\) کدام است؟", options: ["2", "3", "0", "1"], correct: 0, weight: 1, difficulty: "medium", chapter: 2 },
-        { text: "کدام روش برای گردآوری داده‌های «تعداد خودروهای عبوری از یک تقاطع» مناسب است؟", options: ["پرسش‌نامه", "مصاحبه", "مشاهده", "آزمایش"], correct: 2, weight: 1, difficulty: "easy", chapter: 3 },
-        { text: "میانگین اعداد 10، 20، 30، 40، 50 کدام است؟", options: ["25", "30", "35", "40"], correct: 1, weight: 1, difficulty: "easy", chapter: 3 },
+        { text: 
+            "اگر \\(f(x) = 3x - 4\\) باشد، مقدار \\(f(2)\\) کدام است؟ ",
+             options: ["2", "3", "0", "1"],
+              correct: 0,
+               weight: 1,
+                difficulty: "medium",
+                 chapter: 2 
+                },
+
+                {
+    text: `نمودار یک تابع خطی به صورت زیر است. اگر \\(f(a)=3\\) باشد، مقدار \\(a\\) کدام است؟ <br>
+           <img src="img/alineForriaziVamar.png" alt="a line" style="max-width:100%; height:auto; margin:8px 0;">`,
+    options: ["\\(\\frac{{ - 1}}{3}\\)", "\\(\\frac{{ - 1}}{2}\\)", "\\(\\frac{{  1}}{3}\\)", "\\(\\frac{{  1}}{2}\\)"],
+    correct: 0,
+    weight: 1,
+    chapter: 2
+},
+        { text: "میانگین اعداد 10، 50، 60، 0، 30 کدام است؟", options: ["25", "30", "35", "40"], correct: 1, weight: 1, difficulty: "easy", chapter: 3 },
         { text: "کدام معیار گرایش به مرکز تحت تأثیر داده‌های دورافتاده قرار نمی‌گیرد؟", options: ["میانگین", "میانه", "دامنه", "واریانس"], correct: 1, weight: 1, difficulty: "easy", chapter: 3 },
         { text: "در مجموعه داده‌های \\(\\{5, 7, 9, 11, 13\\}\\)، میانه کدام است؟", options: ["5", "7", "9", "11"], correct: 2, weight: 1, difficulty: "medium", chapter: 3 },
         { text: "انحراف معیار داده‌های \\(\\{10, 10, 10, 10\\}\\) چند است؟", options: ["10", "5", "0", "1"], correct: 2, weight: 1, difficulty: "medium", chapter: 3 },
@@ -182,7 +198,7 @@
     function renderRegister() {
         app.innerHTML = `
             <div class="register-box">
-                <h2>📚 آزمون ریاضی دهم تجربی</h2>
+                <h2>📚 آزمون ریاضی دهم انسانی</h2>
                 <p style="margin:12px 0">بسم الله الرحمن الرحیم</p>
                 <p>لطفاً اطلاعات خود را وارد کنید</p>
                 <div style="text-align:right">
@@ -247,7 +263,7 @@
 
         app.innerHTML = `
             <div class="info-bar">
-                <div class="teacher-info">👨‍🏫 دبیر: میثم یعقوبیان | مدرسه غدیر | پایه دهم تجربی</div>
+                <div class="teacher-info">👨‍🏫 دبیر: میثم یعقوبیان | مدرسه غدیر | پایه دهم انسانی</div>
                 <div class="timer-area">⏱️ زمان باقی: ${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}</div>
             </div>
             <div class="progress-section"><div class="progress-bar-container"><div class="progress-fill" style="width: ${progressPercent}%"></div></div><div class="question-counter">سوال ${currentQ+1} از ${QUESTIONS.length}</div></div>
