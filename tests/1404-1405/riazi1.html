@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>آزمون ریاضی دهم تجربی | ذخیره خودکار در گوگل</title>
+    <title>آزمون ریاضی دهم تجربی | سوالات تصادفی</title>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
     <style>
+        /* استایل‌ها مانند قبل - برای اختصار حذف شده، ولی باید کامل باشد */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Tahoma', 'Segoe UI', 'Vazir', sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #e9edf2 100%); color: #1e2a3e; line-height: 1.5; overflow-x: hidden; }
         .container { max-width: 800px; margin: 0 auto; padding: 20px 16px 40px; }
@@ -42,8 +43,8 @@
 <div class="container" id="app"></div>
 
 <script>
-    // ======================= سوالات (20 سوال با فرمت LaTeX) =======================
-    const QUESTIONS = [
+    // ======================= سوالات اصلی (۲۰ سوال) =======================
+    const MASTER_QUESTIONS = [
         { text: "مجموعه اعداد طبیعی کوچک‌تر از \\(5\\) کدام است؟", options: ["\\(\\{0,1,2,3,4\\}\\)", "\\(\\{1,2,3,4\\}\\)", "\\(\\{1,2,3,4,5\\}\\)", "\\(\\{0,1,2,3,4,5\\}\\)"], correct: 1 },
         { text: "در مثلث قائم‌الزاویه، اگر \\(\\sin A = 0.6\\) باشد، \\(\\cos A\\) کدام است؟", options: ["0.4", "0.6", "0.8", "0.75"], correct: 2 },
         { text: "اگر زاویه \\(\\theta\\) در ربع سوم باشد و \\(\\tan \\theta = 1\\)، آنگاه \\(\\theta\\) چند درجه است؟", options: ["45°", "135°", "225°", "315°"], correct: 2 },
@@ -65,8 +66,6 @@
         { text: "اگر \\(P(A)=0.3\\) باشد، احتمال متمم \\(A\\) چقدر است؟", options: ["0.7", "0.3", "0", "1"], correct: 0 },
         { text: "از بین اعداد \\(1\\) تا \\(10\\)، یک عدد تصادفی انتخاب می‌شود. احتمال مضرب \\(3\\) بودن آن چقدر است؟", options: ["\\(\\frac{3}{10}\\)", "\\(\\frac{1}{5}\\)", "\\(\\frac{2}{5}\\)", "\\(\\frac{1}{2}\\)"], correct: 0 }
     ];
-    const TOTAL_QS = QUESTIONS.length;
-    const TOTAL_SCORE = TOTAL_QS; // هر سوال 1 نمره
 
     // کلیدهای ذخیره‌سازی
     const STORAGE_KEY_STARTED = "math_exam_started";
@@ -74,21 +73,33 @@
     const STORAGE_KEY_ANSWERS = "math_exam_answers";
     const STORAGE_KEY_FINISHED = "math_exam_finished";
     const STORAGE_KEY_FINISH_TIME = "math_exam_finish_time";
+    const STORAGE_KEY_RANDOMIZED_QS = "math_exam_randomized_questions"; // ذخیره سوالات تصادفی
 
     let currentQ = 0;
     let studentInfo = null;
-    let answers = new Array(TOTAL_QS).fill(null);
+    let answers = [];
     let examFinished = false;
     let finishTimestamp = null;
     let timerInterval = null;
-    let timeLeft = 45 * 60; // 45 دقیقه
+    let timeLeft = 45 * 60;
+    let QUESTIONS = []; // این آرایه بعد از شافل شدن پر می‌شود
 
     const app = document.getElementById("app");
+
+    // ======================= تابع Shuffle =======================
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
 
     // ======================= توابع کمکی =======================
     function saveToLocal() {
         if (studentInfo) localStorage.setItem(STORAGE_KEY_STUDENT, JSON.stringify(studentInfo));
         localStorage.setItem(STORAGE_KEY_ANSWERS, JSON.stringify(answers));
+        if (QUESTIONS.length) localStorage.setItem(STORAGE_KEY_RANDOMIZED_QS, JSON.stringify(QUESTIONS));
     }
 
     function loadFromLocal() {
@@ -96,6 +107,13 @@
         if (storedStudent) studentInfo = JSON.parse(storedStudent);
         const storedAnswers = localStorage.getItem(STORAGE_KEY_ANSWERS);
         if (storedAnswers) answers = JSON.parse(storedAnswers);
+        const storedQuestions = localStorage.getItem(STORAGE_KEY_RANDOMIZED_QS);
+        if (storedQuestions) {
+            QUESTIONS = JSON.parse(storedQuestions);
+        } else {
+            // اگر سوال تصادفی ذخیره نشده، از اصلی استفاده کن (ولی نباید اینجا باشد)
+            QUESTIONS = [...MASTER_QUESTIONS];
+        }
         const finishedFlag = localStorage.getItem(STORAGE_KEY_FINISHED);
         if (finishedFlag === "true") examFinished = true;
         const ft = localStorage.getItem(STORAGE_KEY_FINISH_TIME);
@@ -104,14 +122,14 @@
 
     function computeScore() {
         let score = 0;
-        for (let i = 0; i < TOTAL_QS; i++) {
+        for (let i = 0; i < QUESTIONS.length; i++) {
             if (answers[i] !== null && answers[i] === QUESTIONS[i].correct) score++;
         }
         return score;
     }
 
-    // ======================= اطلاعات خودکار مرورگر =======================
-    function getAutoInfo() {
+    // ======================= اطلاعات خودکار مرورگر (مثل قبل) =======================
+    function getAutoInfo() { /* ... (همان تابع قبلی) ... */ 
         try {
             function getDeviceType() {
                 const ua = navigator.userAgent;
@@ -132,75 +150,30 @@
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || "نامشخص",
                 hardwareConcurrency: navigator.hardwareConcurrency || "نامشخص"
             };
-        } catch(e) {
-            console.warn("خطا در دریافت اطلاعات خودکار", e);
-            return {
-                userAgent: "خطا", language: "نامشخص", screenWidth: 0, screenHeight: 0,
-                viewportWidth: 0, viewportHeight: 0, deviceType: "نامشخص", online: true,
-                cookieEnabled: false, timeZone: "نامشخص", hardwareConcurrency: "نامشخص"
-            };
-        }
+        } catch(e) { return {}; }
     }
 
-    // ======================= ذخیره در گوگل درایو =======================
-    // ⚠️ لطفاً لینک Web App خود را در اینجا قرار دهید ⚠️
+    // ======================= ذخیره در گوگل =======================
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyI5SZv_MSMZl4Eg5OguSKCFAH2vgqwLhN4zYoHsOqbA6QvYHgxW42_mPKmf5GyrKh6/exec";
-
     async function saveToGoogleDrive(student, score, answersList, startTime, endTime) {
-        if (!student) {
-            console.error("❌ اطلاعات دانش‌آموز موجود نیست");
-            return;
-        }
+        if (!student) return;
         const auto = getAutoInfo();
         const payload = {
-            name: student.name,
-            family: student.family,
-            classNumber: student.classNumber,
-            studentCode: student.studentCode,
-            score: score,
-            total: TOTAL_SCORE,
-            answers: answersList,
-            timestamp: new Date().toISOString(),
-            // اطلاعات خودکار
-            userAgent: auto.userAgent,
-            deviceType: auto.deviceType,
-            screenResolution: `${auto.screenWidth}x${auto.screenHeight}`,
-            viewport: `${auto.viewportWidth}x${auto.viewportHeight}`,
-            language: auto.language,
-            timeZone: auto.timeZone,
-            online: auto.online,
-            cookieEnabled: auto.cookieEnabled,
-            hardwareConcurrency: auto.hardwareConcurrency,
-            // زمان شروع و پایان
-            startTime: startTime || "",
-            endTime: endTime || "",
+            name: student.name, family: student.family, classNumber: student.classNumber, studentCode: student.studentCode,
+            score: score, total: QUESTIONS.length, answers: answersList, timestamp: new Date().toISOString(),
+            ...auto, startTime: startTime || "", endTime: endTime || "",
             durationSeconds: (startTime && endTime) ? (parseInt(endTime) - parseInt(startTime)) / 1000 : ""
         };
-
-        console.log("📤 ارسال به گوگل:", payload);
-
-        if (GOOGLE_SCRIPT_URL.includes("YOUR_SCRIPT_ID")) {
-            console.warn("⚠️ لطفاً لینک صحیح Web App را در کد قرار دهید.");
-            return;
-        }
-
+        if (GOOGLE_SCRIPT_URL.includes("YOUR_SCRIPT_ID")) return;
         try {
-            const response = await fetch(GOOGLE_SCRIPT_URL, {
-                method: "POST",
-                mode: "no-cors",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
-            console.log("✅ درخواست ذخیره ارسال شد (در حالت no-cors نمی‌توان پاسخ را خواند)");
-        } catch(e) {
-            console.error("❌ خطا در ارسال به گوگل:", e);
-        }
+            await fetch(GOOGLE_SCRIPT_URL, { method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+            console.log("ذخیره شد");
+        } catch(e) { console.error(e); }
     }
 
     function canShowAnswers() {
         if (!examFinished || !finishTimestamp) return false;
-        const oneHour = 60 * 60 * 1000;
-        return (Date.now() - finishTimestamp) >= oneHour;
+        return (Date.now() - finishTimestamp) >= 60 * 60 * 1000;
     }
 
     // ======================= صفحه ثبت نام =======================
@@ -232,104 +205,64 @@
             studentInfo = { name, family, classNumber: classNum, studentCode };
             localStorage.setItem(STORAGE_KEY_STARTED, "true");
             localStorage.setItem("exam_start_time", Date.now().toString());
+            // ایجاد سوالات تصادفی برای این کاربر
+            QUESTIONS = shuffleArray([...MASTER_QUESTIONS]);
+            answers = new Array(QUESTIONS.length).fill(null);
             saveToLocal();
             startExam();
         });
     }
 
-    // ======================= شروع و مدیریت آزمون =======================
+    // ======================= شروع آزمون =======================
     function startExam() {
         const startTime = parseInt(localStorage.getItem("exam_start_time"));
         const elapsed = Math.floor((Date.now() - startTime) / 1000);
         timeLeft = Math.max(0, 45*60 - elapsed);
-        if (timeLeft <= 0) {
-            endExam();
-            return;
-        }
+        if (timeLeft <= 0) { endExam(); return; }
         if (timerInterval) clearInterval(timerInterval);
         timerInterval = setInterval(() => {
             if (examFinished) return;
-            if (timeLeft <= 1) {
-                clearInterval(timerInterval);
-                endExam();
-            } else {
-                timeLeft--;
-                localStorage.setItem("exam_time_left", timeLeft);
-                renderQuestion();
-            }
+            if (timeLeft <= 1) { clearInterval(timerInterval); endExam(); }
+            else { timeLeft--; renderQuestion(); }
         }, 1000);
         renderQuestion();
     }
 
     function renderQuestion() {
         if (examFinished) { renderResult(); return; }
-        if (!studentInfo) { renderRegister(); return; }
+        if (!studentInfo || !QUESTIONS.length) { renderRegister(); return; }
         const q = QUESTIONS[currentQ];
         const selectedIndex = answers[currentQ];
         const minutes = Math.floor(timeLeft / 60);
         const seconds = timeLeft % 60;
-        const progressPercent = ((currentQ+1)/TOTAL_QS)*100;
+        const progressPercent = ((currentQ+1)/QUESTIONS.length)*100;
 
         let optionsHtml = '';
         q.options.forEach((opt, idx) => {
             const checked = (selectedIndex === idx) ? 'checked' : '';
-            optionsHtml += `
-                <div class="option" data-val="${idx}">
-                    <input type="radio" name="q_option" id="opt_${idx}" value="${idx}" ${checked}>
-                    <label for="opt_${idx}">${String.fromCharCode(65+idx)} - ${opt}</label>
-                </div>
-            `;
+            optionsHtml += `<div class="option" data-val="${idx}"><input type="radio" name="q_option" id="opt_${idx}" value="${idx}" ${checked}><label for="opt_${idx}">${String.fromCharCode(65+idx)} - ${opt}</label></div>`;
         });
 
-        const html = `
+        app.innerHTML = `
             <div class="info-bar">
                 <div class="teacher-info">👨‍🏫 دبیر: میثم یعقوبیان | مدرسه غدیر | پایه دهم تجربی</div>
                 <div class="timer-area">⏱️ زمان باقی: ${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}</div>
             </div>
-            <div class="progress-section">
-                <div class="progress-bar-container"><div class="progress-fill" style="width: ${progressPercent}%"></div></div>
-                <div class="question-counter">سوال ${currentQ+1} از ${TOTAL_QS}</div>
-            </div>
-            <div class="question-card">
-                <div class="question-text">❓ ${q.text}</div>
-                <div class="options" id="optionsContainer">${optionsHtml}</div>
-                <div class="nav-buttons">
-                    <button id="prevBtn" ${currentQ===0 ? 'disabled' : ''}>قبلی</button>
-                    <button id="nextBtn">بعدی</button>
-                </div>
-                ${currentQ === TOTAL_QS-1 ? '<button id="finishExamBtn" class="submit-btn">پایان آزمون و مشاهده نتیجه</button>' : ''}
-            </div>
+            <div class="progress-section"><div class="progress-bar-container"><div class="progress-fill" style="width: ${progressPercent}%"></div></div><div class="question-counter">سوال ${currentQ+1} از ${QUESTIONS.length}</div></div>
+            <div class="question-card"><div class="question-text">❓ ${q.text}</div><div class="options">${optionsHtml}</div>
+            <div class="nav-buttons"><button id="prevBtn" ${currentQ===0 ? 'disabled' : ''}>قبلی</button><button id="nextBtn">بعدی</button></div>
+            ${currentQ === QUESTIONS.length-1 ? '<button id="finishExamBtn" class="submit-btn">پایان آزمون و مشاهده نتیجه</button>' : ''}</div>
         `;
-        app.innerHTML = html;
 
         document.querySelectorAll('.option').forEach(opt => {
             const radio = opt.querySelector('input[type="radio"]');
-            if (radio) {
-                radio.addEventListener('change', () => {
-                    answers[currentQ] = parseInt(opt.dataset.val);
-                    saveToLocal();
-                });
-            }
-            opt.addEventListener('click', () => {
-                const radio = opt.querySelector('input[type="radio"]');
-                if (radio && !radio.checked) {
-                    radio.checked = true;
-                    answers[currentQ] = parseInt(opt.dataset.val);
-                    saveToLocal();
-                }
-            });
+            if (radio) radio.addEventListener('change', () => { answers[currentQ] = parseInt(opt.dataset.val); saveToLocal(); });
+            opt.addEventListener('click', () => { if (radio && !radio.checked) { radio.checked = true; answers[currentQ] = parseInt(opt.dataset.val); saveToLocal(); } });
         });
-
         document.getElementById("prevBtn")?.addEventListener("click", () => { if (currentQ > 0) { currentQ--; renderQuestion(); } });
-        document.getElementById("nextBtn")?.addEventListener("click", () => { if (currentQ < TOTAL_QS-1) { currentQ++; renderQuestion(); } });
+        document.getElementById("nextBtn")?.addEventListener("click", () => { if (currentQ < QUESTIONS.length-1) { currentQ++; renderQuestion(); } });
         const finishBtn = document.getElementById("finishExamBtn");
-        if (finishBtn) {
-            finishBtn.addEventListener("click", () => {
-                if (confirm("آیا برای پایان آزمون و مشاهده نتیجه اطمینان دارید؟")) {
-                    endExam();
-                }
-            });
-        }
+        if (finishBtn) finishBtn.addEventListener("click", () => { if (confirm("پایان؟")) endExam(); });
         if (window.MathJax) MathJax.typesetPromise();
     }
 
@@ -340,68 +273,43 @@
         localStorage.setItem(STORAGE_KEY_FINISHED, "true");
         localStorage.setItem(STORAGE_KEY_FINISH_TIME, finishTimestamp.toString());
         if (timerInterval) clearInterval(timerInterval);
-
         const startTime = localStorage.getItem("exam_start_time");
         const endTime = Date.now().toString();
-        if (studentInfo) {
-            const score = computeScore();
-            saveToGoogleDrive(studentInfo, score, answers, startTime, endTime);
-        }
+        if (studentInfo) saveToGoogleDrive(studentInfo, computeScore(), answers, startTime, endTime);
         renderResult();
     }
 
     function renderResult() {
-        if (timerInterval) clearInterval(timerInterval);
         const score = computeScore();
         const canShow = canShowAnswers();
-
         let answersTable = '';
         if (canShow) {
             answersTable = '<div style="margin-top:20px; text-align:right; background:#f1f5f9; padding:12px; border-radius:24px;"><h4>پاسخ صحیح سوالات:</h4>';
-            for (let i=0; i<TOTAL_QS; i++) {
-                const correctIdx = QUESTIONS[i].correct;
-                const correctText = QUESTIONS[i].options[correctIdx];
+            for (let i=0; i<QUESTIONS.length; i++) {
+                const correctText = QUESTIONS[i].options[QUESTIONS[i].correct];
                 answersTable += `<p><strong>سوال ${i+1}:</strong> ${correctText}</p>`;
             }
             answersTable += '</div>';
         } else {
             const remainSec = Math.max(0, 3600 - Math.floor((Date.now() - finishTimestamp)/1000));
-            const minutesRem = Math.floor(remainSec / 60);
-            answersTable = `<p style="margin-top:16px; background:#e2e8f0; padding:12px; border-radius:20px;">🔒 پاسخ‌های صحیح ${minutesRem} دقیقهٔ دیگر قابل مشاهده است.</p>`;
+            answersTable = `<p style="margin-top:16px;">🔒 پاسخ‌های صحیح ${Math.floor(remainSec/60)} دقیقه دیگر قابل مشاهده است.</p>`;
         }
-
-        const resultHtml = `
-            <div class="result-card">
-                <h2>📊 گزارش نهایی آزمون</h2>
-                <p><strong>نام و نام خانوادگی:</strong> ${studentInfo.name} ${studentInfo.family}</p>
-                <p><strong>کلاس:</strong> ${studentInfo.classNumber} &nbsp;|&nbsp; <strong>کد دانش‌آموزی:</strong> ${studentInfo.studentCode}</p>
-                <div class="score">نمره شما: ${score} از ${TOTAL_SCORE}</div>
-                ${answersTable}
-                <footer>آزمون ریاضی دهم - طراحی شده برای نوجوانان</footer>
-            </div>
-        `;
-        app.innerHTML = resultHtml;
+        app.innerHTML = `<div class="result-card"><h2>📊 گزارش نهایی</h2><p><strong>${studentInfo.name} ${studentInfo.family}</strong> | کلاس ${studentInfo.classNumber} | کد ${studentInfo.studentCode}</p><div class="score">نمره شما: ${score} از ${QUESTIONS.length}</div>${answersTable}<footer>آزمون ریاضی دهم - سوالات به صورت تصادفی</footer></div>`;
         if (window.MathJax) MathJax.typesetPromise();
     }
 
-    // ======================= مقداردهی اولیه =======================
     function init() {
         const alreadyStarted = localStorage.getItem(STORAGE_KEY_STARTED);
         const finished = localStorage.getItem(STORAGE_KEY_FINISHED) === "true";
         if (finished) {
             loadFromLocal();
-            if (studentInfo) {
-                examFinished = true;
-                finishTimestamp = parseInt(localStorage.getItem(STORAGE_KEY_FINISH_TIME));
-                renderResult();
-            } else {
-                app.innerHTML = "<div class='register-box'>شما قبلاً آزمون را به پایان رسانده‌اید. امکان شرکت مجدد وجود ندارد.</div>";
-            }
+            if (studentInfo) { examFinished = true; finishTimestamp = parseInt(localStorage.getItem(STORAGE_KEY_FINISH_TIME)); renderResult(); }
+            else app.innerHTML = "<div class='register-box'>شما قبلاً آزمون را به پایان رسانده‌اید.</div>";
             return;
         }
         if (alreadyStarted === "true") {
             loadFromLocal();
-            if (studentInfo) startExam();
+            if (studentInfo && QUESTIONS.length) startExam();
             else renderRegister();
         } else {
             renderRegister();
