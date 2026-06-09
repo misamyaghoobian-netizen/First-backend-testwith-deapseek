@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>طراح سوالات ریاضی | پیش‌نمایش و ساخت سوال</title>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Tahoma', 'Segoe UI', 'Vazir', sans-serif;
+            background: #e9edf2;
+            color: #1e2a3e;
+            line-height: 1.5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+        /* فرم ورودی */
+        .form-panel {
+            flex: 1;
+            min-width: 320px;
+            background: white;
+            border-radius: 32px;
+            padding: 24px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .form-panel h2, .preview-panel h2 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            border-right: 4px solid #3b82f6;
+            padding-right: 12px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 20px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: vertical;
+        }
+        .options-group {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .option-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .option-row span {
+            font-weight: bold;
+            width: 30px;
+        }
+        .option-row input {
+            flex: 1;
+        }
+        .correct-select {
+            margin: 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .correct-select label {
+            display: inline;
+            margin-left: 12px;
+        }
+        button {
+            background-color: #3b82f6;
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-left: 10px;
+            margin-top: 8px;
+        }
+        button:hover {
+            background-color: #2563eb;
+            transform: scale(0.97);
+        }
+        .btn-secondary {
+            background-color: #64748b;
+        }
+        .btn-danger {
+            background-color: #dc2626;
+        }
+        .btn-success {
+            background-color: #059669;
+        }
+        .preview-panel {
+            flex: 2;
+            min-width: 400px;
+            background: #f1f5f9;
+            border-radius: 32px;
+            padding: 24px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .questions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin-top: 20px;
+        }
+        .question-card {
+            background: white;
+            border-radius: 28px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .question-text-preview {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 16px 0;
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 20px;
+        }
+        .options-preview {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .option-preview {
+            background: #f8fafc;
+            padding: 8px 16px;
+            border-radius: 40px;
+            border: 1px solid #e2e8f0;
+        }
+        .badge {
+            background: #e2e8f0;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+        }
+        .btn-icon {
+            background: none;
+            color: #3b82f6;
+            font-size: 0.8rem;
+            padding: 4px 12px;
+            margin: 0;
+        }
+        textarea.output {
+            width: 100%;
+            height: 200px;
+            font-family: monospace;
+            direction: ltr;
+            text-align: left;
+            margin-top: 20px;
+            background: #1e293b;
+            color: #cbd5e1;
+            border-radius: 16px;
+            padding: 12px;
+        }
+        hr {
+            margin: 20px 0;
+        }
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            .preview-panel { min-width: auto; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="form-panel">
+        <h2>✏️ ورود / ویرایش سوال</h2>
+        <div class="form-group">
+            <label>متن سوال (با قابلیت LaTeX: \( ... \))</label>
+            <textarea id="questionText" rows="3" placeholder="مثال: مقدار \( \sqrt{18} \) ساده شده برابر است با؟"></textarea>
+        </div>
+        <div class="options-group">
+            <div class="option-row"><span>گزینه ۱</span><input type="text" id="opt0" placeholder="گزینه اول"></div>
+            <div class="option-row"><span>گزینه ۲</span><input type="text" id="opt1" placeholder="گزینه دوم"></div>
+            <div class="option-row"><span>گزینه ۳</span><input type="text" id="opt2" placeholder="گزینه سوم"></div>
+            <div class="option-row"><span>گزینه ۴</span><input type="text" id="opt3" placeholder="گزینه چهارم"></div>
+        </div>
+        <div class="correct-select">
+            <span>پاسخ صحیح :</span>
+            <label><input type="radio" name="correct" value="0"> گزینه ۱</label>
+            <label><input type="radio" name="correct" value="1"> گزینه ۲</label>
+            <label><input type="radio" name="correct" value="2"> گزینه ۳</label>
+            <label><input type="radio" name="correct" value="3"> گزینه ۴</label>
+        </div>
+        <div>
+            <button id="addBtn">➕ افزودن سوال جدید</button>
+            <button id="updateBtn" class="btn-secondary" disabled>🔄 بروزرسانی</button>
+            <button id="cancelEditBtn" class="btn-secondary">❌ لغو ویرایش</button>
+        </div>
+        <hr>
+        <button id="exportBtn" class="btn-success">📤 خروجی JSON سوالات (برای کپی)</button>
+        <textarea id="exportArea" class="output" readonly placeholder="آرایه سوالات به فرمت جاوااسکریپت در اینجا ظاهر می‌شود..."></textarea>
+        <p style="font-size:0.7rem; margin-top:8px;">نکته: کد خروجی را کپی کرده و در فایل نهایی آزمون در قسمت QUESTIONS جایگذاری کنید.</p>
+    </div>
+
+    <div class="preview-panel">
+        <h2>📋 پیش‌نمایش سوالات (ظاهر نهایی)</h2>
+        <div id="questionsContainer" class="questions-list">
+            <!-- سوالات اینجا نمایش داده می‌شوند -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // آرایه ذخیره سوالات
+    let questions = [];
+    let editIndex = -1;  // اندیس سوال در حال ویرایش
+
+    // بارگذاری از localStorage (اختیاری)
+    function loadFromStorage() {
+        const stored = localStorage.getItem("designer_questions");
+        if (stored) {
+            try {
+                questions = JSON.parse(stored);
+                renderQuestions();
+            } catch(e) {}
+        }
+    }
+    function saveToStorage() {
+        localStorage.setItem("designer_questions", JSON.stringify(questions));
+    }
+
+    // رندر مجدد با MathJax
+    async function renderMath() {
+        if (window.MathJax) {
+            await MathJax.typesetPromise();
+        }
+    }
+
+    // نمایش لیست سوالات در پنل پیش‌نمایش
+    function renderQuestions() {
+        const container = document.getElementById("questionsContainer");
+        if (!container) return;
+        if (questions.length === 0) {
+            container.innerHTML = "<p style='text-align:center; padding:40px;'>هیچ سوالی اضافه نشده است. از پنل سمت راست سوال بسازید.</p>";
+            return;
+        }
+        let html = "";
+        questions.forEach((q, idx) => {
+            const optionsHtml = q.options.map((opt, optIdx) => {
+                const letter = String.fromCharCode(65+optIdx);
+                return `<div class="option-preview">${letter} - ${opt}</div>`;
+            }).join("");
+            html += `
+                <div class="question-card" data-idx="${idx}">
+                    <div class="question-header">
+                        <span class="badge">سوال ${idx+1}</span>
+                        <div>
+                            <button class="btn-icon edit-question" data-idx="${idx}">✏️ ویرایش</button>
+                            <button class="btn-icon delete-question" data-idx="${idx}" style="color:#dc2626;">🗑️ حذف</button>
+                        </div>
+                    </div>
+                    <div class="question-text-preview">❓ ${q.text}</div>
+                    <div class="options-preview">${optionsHtml}</div>
+                    <div class="badge" style="background:#d1fae5;">✅ پاسخ صحیح: گزینه ${q.correct+1}</div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+        // بعد از رندر html، رویدادهای دکمه‌ها را متصل کن
+        document.querySelectorAll('.edit-question').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const idx = parseInt(btn.dataset.idx);
+                loadQuestionForEdit(idx);
+            });
+        });
+        document.querySelectorAll('.delete-question').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const idx = parseInt(btn.dataset.idx);
+                if (confirm("آیا این سوال حذف شود؟")) {
+                    questions.splice(idx, 1);
+                    if (editIndex === idx) resetForm();
+                    else if (editIndex > idx) editIndex--;
+                    saveToStorage();
+                    renderQuestions();
+                    updateExportText();
+                }
+            });
+        });
+        renderMath();
+        updateExportText();
+    }
+
+    // بارگذاری سوال در فرم برای ویرایش
+    function loadQuestionForEdit(idx) {
+        const q = questions[idx];
+        document.getElementById("questionText").value = q.text;
+        document.getElementById("opt0").value = q.options[0];
+        document.getElementById("opt1").value = q.options[1];
+        document.getElementById("opt2").value = q.options[2];
+        document.getElementById("opt3").value = q.options[3];
+        const correctRadio = document.querySelector(`input[name="correct"][value="${q.correct}"]`);
+        if (correctRadio) correctRadio.checked = true;
+        editIndex = idx;
+        document.getElementById("addBtn").disabled = true;
+        document.getElementById("updateBtn").disabled = false;
+        document.getElementById("cancelEditBtn").disabled = false;
+    }
+
+    function resetForm() {
+        document.getElementById("questionText").value = "";
+        document.getElementById("opt0").value = "";
+        document.getElementById("opt1").value = "";
+        document.getElementById("opt2").value = "";
+        document.getElementById("opt3").value = "";
+        document.querySelectorAll('input[name="correct"]').forEach(r => r.checked = false);
+        editIndex = -1;
+        document.getElementById("addBtn").disabled = false;
+        document.getElementById("updateBtn").disabled = true;
+        document.getElementById("cancelEditBtn").disabled = true;
+    }
+
+    // گرفتن مقادیر از فرم و ساخت شیء سوال
+    function getQuestionFromForm() {
+        const text = document.getElementById("questionText").value.trim();
+        const opt0 = document.getElementById("opt0").value.trim();
+        const opt1 = document.getElementById("opt1").value.trim();
+        const opt2 = document.getElementById("opt2").value.trim();
+        const opt3 = document.getElementById("opt3").value.trim();
+        let correct = null;
+        const radioSelected = document.querySelector('input[name="correct"]:checked');
+        if (radioSelected) correct = parseInt(radioSelected.value);
+        if (!text || !opt0 || !opt1 || !opt2 || !opt3 || correct === null) {
+            alert("لطفاً تمام فیلدها (متن سوال، چهار گزینه و پاسخ صحیح) را پر کنید.");
+            return null;
+        }
+        return { text, options: [opt0, opt1, opt2, opt3], correct };
+    }
+
+    function addQuestion() {
+        const newQ = getQuestionFromForm();
+        if (!newQ) return;
+        questions.push(newQ);
+        saveToStorage();
+        resetForm();
+        renderQuestions();
+    }
+
+    function updateQuestion() {
+        if (editIndex === -1) return;
+        const updatedQ = getQuestionFromForm();
+        if (!updatedQ) return;
+        questions[editIndex] = updatedQ;
+        saveToStorage();
+        resetForm();
+        renderQuestions();
+    }
+
+    // خروجی JSON برای کپی در فایل نهایی
+    function updateExportText() {
+        const exportArea = document.getElementById("exportArea");
+        if (!exportArea) return;
+        // تبدیل به رشته قابل کپی (فرمت جاوااسکریپت)
+        let output = "const QUESTIONS = [\n";
+        questions.forEach((q, i) => {
+            const optsStr = q.options.map(opt => `"${escapeJS(opt)}"`).join(", ");
+            output += `    { text: "${escapeJS(q.text)}", options: [${optsStr}], correct: ${q.correct} }`;
+            if (i < questions.length-1) output += ",\n";
+            else output += "\n";
+        });
+        output += "];";
+        exportArea.value = output;
+    }
+
+    function escapeJS(str) {
+        return str.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\n/g, "\\n");
+    }
+
+    // رویدادها
+    document.getElementById("addBtn").addEventListener("click", addQuestion);
+    document.getElementById("updateBtn").addEventListener("click", updateQuestion);
+    document.getElementById("cancelEditBtn").addEventListener("click", resetForm);
+    document.getElementById("exportBtn").addEventListener("click", () => {
+        const textarea = document.getElementById("exportArea");
+        textarea.select();
+        document.execCommand("copy");
+        alert("کد سوالات در کلیپبورد کپی شد. می‌توانید در فایل نهایی جایگذاری کنید.");
+    });
+
+    // بارگذاری اولیه
+    loadFromStorage();
+    if (questions.length === 0) {
+        // اضافه کردن چند سوال نمونه برای راهنمایی
+        questions = [
+            { text: "مقدار \\(\\sqrt{18}\\) ساده شده برابر است با:", options: ["\\(3\\sqrt{2}\\)", "\\(2\\sqrt{3}\\)", "\\(6\\sqrt{2}\\)", "\\(9\\sqrt{2}\\)"], correct: 0 },
+            { text: "مجموعه جواب معادله \\(x^2 - 4 = 0\\) کدام است؟", options: ["\\(\\{2\\}\\)", "\\(\\{2, -2\\}\\)", "\\(\\{4\\}\\)", "\\(\\varnothing\\)"], correct: 1 },
+            { text: "در مثلث قائم‌الزاویه، اگر \\(\\sin A = 0.6\\) باشد، \\(\\cos A\\) کدام است؟", options: ["0.4", "0.6", "0.8", "0.75"], correct: 2 }
+        ];
+        saveToStorage();
+    }
+    renderQuestions();
+    // در صورت تغییر دستی در localStorage (برای همگام سازی)
+    window.addEventListener("storage", () => {
+        loadFromStorage();
+        renderQuestions();
+    });
+</script>
+</body>
+</html>
